@@ -1,0 +1,74 @@
+.join {
+  width: 612px;
+  height: 773px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #082f0c;
+  border-radius: 20px;
+  font-family: "Lato";
+  position: relative;
+  button {
+    width: 460px;
+    height: 78px;
+    background: #ffffff;
+    border-radius: 60px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    P {
+      font-family: "Lato";
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 29px;
+      color: #082f0c;
+    }
+  }
+  button:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    transition-duration: 0.5s;
+  }
+  .joinList {
+    overflow-y: scroll;
+    max-height: 420px;
+
+    .JoinGame {
+      display: flex;
+      align-items: center;
+      width: 272px;
+      height: 51px;
+      background: #2fb04a;
+      border-radius: 60px;
+      justify-content: center;
+      cursor: pointer;
+      margin-bottom: 20px;
+
+      p {
+        font-family: "Lato";
+        font-style: normal;
+        font-weight: 600;
+        font-size: 20px;
+        line-height: 29px;
+        color: #ffffff;
+        margin-right: 10px;
+      }
+    }
+    .JoinGame:hover {
+      background: rgba(47, 176, 74, 0.8);
+      transition-duration: 0.5s;
+    }
+  }
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  h6 {
+    cursor: pointer;
+    color: white;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 26px;
+    position: absolute;
+    bottom: 3%;
+  }
+}

@@ -1,0 +1,37 @@
+.waiting {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 612px;
+  height: 773px;
+  background: #082f0c;
+  border-radius: 20px;
+  img {
+    width: 46px;
+    height: 46px;
+  }
+  h6 {
+    color: white;
+    text-align: center;
+    font-family: "Lato";
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 24px;
+    margin: 30px 0px;
+  }
+  button {
+    width: 278px;
+    height: 74px;
+    background: #2fb04a;
+    border-radius: 60px;
+    cursor: pointer;
+    border: none;
+    p {
+      font-family: "Lato";
+      font-weight: 600;
+      font-size: 22px;
+      color: white;
+    }
+  }
+}
