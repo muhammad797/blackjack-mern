@@ -1,24 +1,24 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect } from "react";
 import {
   formatScore,
   generateCard,
   generateHand,
-  generateLeftHand
-} from '../../../src/actions/generateHand';
-import { useSelector } from 'react-redux';
-import SocketContext from '../../context/socketContext';
-import { useNavigate } from 'react-router-dom';
+  generateLeftHand,
+} from "../../../src/actions/generateHand";
+import { useSelector } from "react-redux";
+import SocketContext from "../../context/socketContext";
+import { useNavigate } from "react-router-dom";
 
-import Card from '../card';
-import Computer from '../computer';
-import HitButton from '../hitButton';
-import StandButton from '../standButton';
+import Card from "../card";
+import Computer from "../computer";
+import HitButton from "../hitButton";
+import StandButton from "../standButton";
 // import Tutorial from "../tutorial";
-import Wallet from '../wallet';
-import WinnerCard from '../winnerCard';
-import globalStyles from '../../../src/globalStyles';
-import './styles.scss';
-import { io } from 'socket.io-client';
+import Wallet from "../wallet";
+import WinnerCard from "../winnerCard";
+import globalStyles from "../../../src/globalStyles";
+import "./styles.scss";
+import { io } from "socket.io-client";
 
 globalStyles();
 
@@ -35,7 +35,7 @@ function BlackJack({ ids, room, loby, User }) {
   const [leftHit, setLeftHit] = useState(false);
   const [turn, setTurn] = useState(true);
   const [RightHit, setRightHit] = useState(false);
-  const [playerName, setPlayerName] = useState('');
+  const [playerName, setPlayerName] = useState("");
   const [finalTurn, setFinalTurn] = useState(false);
   const [idsFromDisconnect, setIdsFromDisconnect] = useState(false);
 
@@ -47,47 +47,47 @@ function BlackJack({ ids, room, loby, User }) {
   }, [socket]);
 
   const [player, setPlayer] = useState({
-    name: 'player',
+    name: "player",
     score: 0,
-    deck: []
+    deck: [],
   });
   const [leftPlayer, setleftPlayer] = useState({
-    name: 'LeftPlayer',
+    name: "LeftPlayer",
     score: 0,
-    deck: []
+    deck: [],
   });
 
   const [wallet, setWallet] = useState(200);
 
   const [pc, setPc] = useState({
-    name: 'dealer',
+    name: "dealer",
     score: 0,
-    deck: []
+    deck: [],
   });
 
   const [RightWinner, setRightWinner] = useState({
-    winner: '',
-    state: false
+    winner: "",
+    state: false,
   });
   const [LeftWinner, setLeftWinner] = useState({
-    win: '',
-    state: false
+    win: "",
+    state: false,
   });
 
   useEffect(() => {
-    socket.on('leftData', ({ player, turn }) => {
+    socket.on("leftData", ({ player, turn }) => {
       setleftPlayer(player);
       setTurn(false);
     });
-    socket.on('RightHit', ({ player, room, wallet, pc }) => {
+    socket.on("RightHit", ({ player, room, wallet, pc }) => {
       setPlayer(player);
       setPc(pc);
       setWallet(wallet);
     });
-    socket.on('LeftWinner', ({ state, whowin }) => {
+    socket.on("LeftWinner", ({ state, whowin }) => {
       setLeftWinner({
         win: whowin,
-        state: state
+        state: state,
       });
     });
     for (let i = 0; i < room.length; i++) {
@@ -102,34 +102,34 @@ function BlackJack({ ids, room, loby, User }) {
       }
     }
 
-    socket.on('playerLeave', (data) => {
+    socket.on("playerLeave", (data) => {
       if (data === otherSocket || data === currentSocket) {
         setIdsFromDisconnect(true);
       }
     });
     return () => {
-      socket.off('playerLeave', (data) => {});
+      socket.off("playerLeave", (data) => {});
     };
   }, []);
 
   useEffect(() => {
     if (leftHit) {
-      socket.emit('leftHit', {
+      socket.emit("leftHit", {
         player: leftPlayer,
         room: loby,
-        turn: false
+        turn: false,
       });
     }
   }, [leftHit]);
   useEffect(() => {
     if (RightHit) {
-      socket.emit('RightHit', {
+      socket.emit("RightHit", {
         player: player,
         room: loby,
         wallet: wallet,
         pc: pc,
         state: LeftWinner?.state,
-        whowin: LeftWinner?.winner
+        whowin: LeftWinner?.winner,
       });
     }
   }, [RightHit]);
@@ -141,10 +141,10 @@ function BlackJack({ ids, room, loby, User }) {
   }, [finalTurn]);
   useEffect(() => {
     if (LeftWinner.state) {
-      socket.emit('LeftWinner', {
+      socket.emit("LeftWinner", {
         state: LeftWinner?.state,
         whowin: LeftWinner?.win,
-        room: loby
+        room: loby,
       });
     }
   }, [LeftWinner]);
@@ -157,7 +157,7 @@ function BlackJack({ ids, room, loby, User }) {
       prevPlayerDeck.push(playerCard);
       setleftPlayer({
         ...leftPlayer,
-        score: newPlayerScore
+        score: newPlayerScore,
       });
       setLeftHit(true);
       setLeftControls(false);
@@ -172,33 +172,33 @@ function BlackJack({ ids, room, loby, User }) {
   const calculateLeftScore = async (newPcScore = pc.score) => {
     let leftWon;
     if (leftPlayer.score > 21) {
-      leftWon = 'lost';
+      leftWon = "lost";
     } else if (+leftPlayer.score === 21) {
-      leftWon = 'Won';
+      leftWon = "Won";
     } else if (newPcScore > 21 && player.score > 21) {
-      leftWon = 'Won';
+      leftWon = "Won";
     } else if (newPcScore > 21 && leftPlayer.score >= player.score) {
-      leftWon = 'Won';
+      leftWon = "Won";
     } else if (newPcScore > 21 && leftPlayer.score < player.score) {
-      leftWon = 'lost';
+      leftWon = "lost";
     } else if (newPcScore <= 21 && leftPlayer.score < newPcScore) {
-      leftWon = 'lost';
+      leftWon = "lost";
     } else if (newPcScore <= 21 && leftPlayer.score >= newPcScore) {
-      leftWon = 'Won';
+      leftWon = "Won";
     } else if (newPcScore <= 21 && leftPlayer.score >= player.score) {
-      leftWon = 'Won';
+      leftWon = "Won";
     } else if (newPcScore <= 21 && leftPlayer.score < player.score) {
-      leftWon = 'lost';
+      leftWon = "lost";
     }
 
     ///
     else {
-      leftWon = 'Won';
+      leftWon = "Won";
     }
 
     setLeftWinner({
       win: leftWon,
-      state: true
+      state: true,
     });
   };
 
@@ -219,45 +219,45 @@ function BlackJack({ ids, room, loby, User }) {
       setPlayer({
         ...player,
         deck: prevPlayerDeck,
-        score: newPlayerScore
+        score: newPlayerScore,
       });
       setRightHit(true);
 
       let whoWin;
 
       if (newPlayerScore > 21) {
-        whoWin = 'lost';
+        whoWin = "lost";
       } else if (newPlayerScore === 21) {
-        whoWin = 'Won';
+        whoWin = "Won";
       }
 
       //
       else if (newPcScore > 21 && leftPlayer.score > 21) {
-        whoWin = 'Won';
+        whoWin = "Won";
       } else if (newPcScore > 21 && newPlayerScore >= leftPlayer.score) {
-        whoWin = 'Won';
+        whoWin = "Won";
       } else if (newPcScore > 21 && newPlayerScore < leftPlayer.score) {
-        whoWin = 'lost';
+        whoWin = "lost";
       }
       //
       else if (newPcScore <= 21 && newPlayerScore < newPcScore) {
-        whoWin = 'lost';
+        whoWin = "lost";
       } else if (newPcScore <= 21 && newPlayerScore >= newPcScore) {
-        whoWin = 'Won';
+        whoWin = "Won";
       } else if (newPcScore <= 21 && newPlayerScore >= leftPlayer.score) {
-        whoWin = 'Won';
+        whoWin = "Won";
       } else if (newPcScore <= 21 && newPlayerScore < leftPlayer.score) {
-        whoWin = 'lost';
+        whoWin = "lost";
       }
 
       ///
       else {
-        whoWin = 'Won';
+        whoWin = "Won";
       }
 
       setRightWinner({
         winner: whoWin,
-        state: true
+        state: true,
       });
       setRightControls(false);
       setFinalTurn(true);
@@ -273,34 +273,34 @@ function BlackJack({ ids, room, loby, User }) {
       setPc({ ...pc, deck: prevPcDeck, score: newPcScore });
       let whoWin;
       if (player.score > 21) {
-        whoWin = 'lost';
+        whoWin = "lost";
       } else if (player.score === 21) {
-        whoWin = 'Won';
+        whoWin = "Won";
       } else if (newPcScore > 21 && leftPlayer.score > 21) {
-        whoWin = 'Won';
+        whoWin = "Won";
       } else if (newPcScore > 21 && player.score >= leftPlayer.score) {
-        whoWin = 'Won';
+        whoWin = "Won";
       } else if (newPcScore > 21 && player.score < leftPlayer.score) {
-        whoWin = 'lost';
+        whoWin = "lost";
       }
       //
       else if (newPcScore <= 21 && player.score < newPcScore) {
-        whoWin = 'lost';
+        whoWin = "lost";
       } else if (newPcScore <= 21 && player.score >= newPcScore) {
-        whoWin = 'Won';
+        whoWin = "Won";
       } else if (newPcScore <= 21 && player.score >= leftPlayer.score) {
-        whoWin = 'Won';
+        whoWin = "Won";
       } else if (newPcScore <= 21 && player.score < leftPlayer.score) {
-        whoWin = 'lost';
+        whoWin = "lost";
       }
 
       ///
       else {
-        whoWin = 'Won';
+        whoWin = "Won";
       }
       setRightWinner({
         winner: whoWin,
-        state: true
+        state: true,
       });
       setRightHit(true);
       calculateLeftScore(leftPlayer, newPcScore);
@@ -310,23 +310,23 @@ function BlackJack({ ids, room, loby, User }) {
 
   return (
     <>
-      <div className='mainDiv'>
-        <div className='container  '>
+      <div className="mainDiv">
+        <div className="container  ">
           {idsFromDisconnect && (
-            <WinnerCard winner={'player have left the game'}></WinnerCard>
+            <WinnerCard winner={"player have left the game"}></WinnerCard>
           )}
           {socket.id == currentSocket ? (
             <div>
               {LeftWinner.state ? (
-                <div className='flex'>
+                <div className="flex">
                   <WinnerCard winner={LeftWinner.win}></WinnerCard>
                 </div>
               ) : (
-                ''
+                ""
               )}
             </div>
           ) : (
-            ''
+            ""
           )}
           {socket.id == otherSocket ? (
             <div>
@@ -335,11 +335,11 @@ function BlackJack({ ids, room, loby, User }) {
               )}
             </div>
           ) : (
-            ''
+            ""
           )}
           <div>
             <h2>Dealer</h2>
-            <div className='dealerDiv'>
+            <div className="dealerDiv">
               {pc.deck.map((card) => {
                 let cardHidden = true;
                 pc.deck.length == 3
@@ -347,7 +347,7 @@ function BlackJack({ ids, room, loby, User }) {
                   : (cardHidden = true);
                 return <Card card={card} cardHidden={cardHidden}></Card>;
               })}
-              <div className='scores'>
+              <div className="scores">
                 <h1>
                   {pc.deck.length == 2
                     ? formatScore(Number(pc.deck[0][1]))
@@ -357,27 +357,27 @@ function BlackJack({ ids, room, loby, User }) {
             </div>
           </div>
         </div>
-        <div className='playersDiv  '>
+        <div className="playersDiv  ">
           {/* ----------- left player ------------ */}
           <div>
-            <div className='playerID'>
+            <div className="playerID">
               <h3>Player 1</h3>
               <h4>id : {loby}</h4>
             </div>
-            <div className='leftPlayer'>
+            <div className="leftPlayer">
               <div
-                className={`leftPlayerDeck ${turn === true ? 'border' : ''}`}
+                className={`leftPlayerDeck ${turn === true ? "border" : ""}`}
               >
                 {leftPlayer.deck.map((card) => {
                   return <Card card={card}></Card>;
                 })}
-                <div className='scores'>
+                <div className="scores">
                   <h1>{leftPlayer.score}</h1>
                 </div>
               </div>
               {leftControls &&
                 (socket.id == currentSocket ? (
-                  <div className='playButtons'>
+                  <div className="playButtons">
                     <HitButton
                       disabled={leftHit}
                       onClick={() => {
@@ -391,31 +391,39 @@ function BlackJack({ ids, room, loby, User }) {
                     ></StandButton>
                   </div>
                 ) : (
-                  ''
+                  ""
+                ))}
+
+              {socket.id == otherSocket &&
+                LeftWinner.win == "" &&
+                (turn == false ? (
+                  <h2>Its your turn...</h2>
+                ) : (
+                  <h2>Wait for your turn...</h2>
                 ))}
             </div>
           </div>
           {/* ------------ right player ----------- */}
           <div>
-            <div className='playerID'>
+            <div className="playerID">
               <h3>Player 2</h3>
               <h4>id : {User}</h4>
             </div>
-            <div className='rightPlayer'>
+            <div className="rightPlayer">
               <div
-                className={`rightPlayerDeck ${turn === false ? 'border' : ''}`}
+                className={`rightPlayerDeck ${turn === false ? "border" : ""}`}
               >
                 {player.deck.map((card) => {
                   return <Card card={card}></Card>;
                 })}
-                <div className='scores'>
+                <div className="scores">
                   <h1>{player.score}</h1>
                 </div>
               </div>
             </div>
             {rightControls &&
               (socket.id === otherSocket ? (
-                <div className='playButtons'>
+                <div className="playButtons">
                   <HitButton
                     disabled={turn}
                     onClick={() => RightHitButton()}
@@ -428,7 +436,14 @@ function BlackJack({ ids, room, loby, User }) {
                   ></StandButton>
                 </div>
               ) : (
-                ''
+                ""
+              ))}
+            {socket.id == currentSocket &&
+              LeftWinner.win == "" &&
+              (turn == true ? (
+                <h2>Its your turn...</h2>
+              ) : (
+                <h2>waiting for other player turn...</h2>
               ))}
           </div>
         </div>

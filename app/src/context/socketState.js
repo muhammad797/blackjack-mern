@@ -1,8 +1,8 @@
-import React from "react";
-import SocketContext from "./socketContext";
+import React from 'react';
+import SocketContext from './socketContext';
 
-import io from "socket.io-client";
-const socket = io("http://localhost:8000");
+import io from 'socket.io-client';
+const socket = io('https://node-blackjack.herokuapp.com/');
 
 function SocketState(props) {
   const connection = socket;
