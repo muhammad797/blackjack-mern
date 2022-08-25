@@ -1,6 +1,6 @@
                 Black Jack Mern Stack
 
-![](public/icons/game.PNG)
+![](./cover.png)
 
 To run
 
